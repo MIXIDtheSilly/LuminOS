@@ -6,8 +6,9 @@ import "./clock.js";
 import { githubApp } from "./apps/github.js";
 import { browserApp } from "./apps/browser.js";
 import { calculatorApp } from "./apps/calculator.js";
+import { editorApp } from "./apps/editor.js";
 
-const apps = [githubApp, browserApp, calculatorApp];
+const apps = [githubApp, browserApp, calculatorApp, editorApp];
 
 function boot() {
   wm.init(document.getElementById("windows"));
