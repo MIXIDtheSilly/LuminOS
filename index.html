@@ -4,12 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LuminOS</title>
+  <!-- Inter ≈ San Francisco. Loaded so the UI looks like macOS on
+       Windows/Linux too, not just on Apple hardware. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
   <link rel="stylesheet" href="css/theme.css" />
   <link rel="stylesheet" href="css/desktop.css" />
   <link rel="stylesheet" href="css/window.css" />
 </head>
 <body>
   <div id="desktop">
+    <header id="menubar">
+      <span id="menubar-clock"></span>
+    </header>
     <div id="windows"></div>
     <nav id="dock" aria-label="Dock"></nav>
   </div>

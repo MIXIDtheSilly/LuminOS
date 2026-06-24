@@ -24,8 +24,8 @@
   --tl-min: #febc2e;
   --tl-zoom: #28c840;
 
-  /* type */
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* type — real San Francisco on Apple devices, Inter everywhere else */
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
 
   /* shape */
@@ -50,7 +50,12 @@ body {
   color: var(--text);
   background-color: var(--bg);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Inter opentype features that nudge it toward San Francisco:
+     single-storey a/g and a less geometric look. */
+  font-feature-settings: "cv05" 1, "cv08" 1, "cv11" 1, "ss01" 1;
+  letter-spacing: -0.01em;
   overflow: hidden;
   -webkit-user-select: none;
   user-select: none;

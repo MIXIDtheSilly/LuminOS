@@ -83,3 +83,34 @@
 .dock-item.running .run-dot {
   opacity: 1;
 }
+
+/* ---- Menu Bar ---- */
+
+#menubar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  background-color: rgba(20, 15, 32, 0.45);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 100001;
+  user-select: none;
+}
+
+#menubar-clock {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0;
+  /* Tabular figures so the time doesn't jitter as digits change. */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "cv05" 1, "cv08" 1;
+}

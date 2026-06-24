@@ -2,6 +2,7 @@
 
 import { wm } from "./wm.js";
 import { Dock } from "./dock.js";
+import "./clock.js";
 import { githubApp } from "./apps/github.js";
 import { browserApp } from "./apps/browser.js";
 import { calculatorApp } from "./apps/calculator.js";
