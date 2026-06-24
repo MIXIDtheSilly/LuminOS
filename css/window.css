@@ -1,0 +1,459 @@
+/* Window chrome (macOS-like) + GitHub card app styles. */
+
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+  min-height: 180px;
+  /* Frosted translucent surface (macOS vibrancy). Blur, not a gradient. */
+  background-color: rgba(20, 15, 32, 0.72);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.window.focused {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: var(--shadow-focus);
+}
+
+.window.minimized {
+  display: none;
+}
+
+/* ---- Title bar ---- */
+.titlebar {
+  flex: 0 0 auto;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  touch-action: none;
+}
+
+.traffic {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 52px;
+}
+
+.light {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 12px 12px;
+}
+
+.light.close { background-color: var(--tl-close); }
+.light.min   { background-color: var(--tl-min); }
+.light.zoom  { background-color: var(--tl-zoom); }
+
+/* macOS-style glyphs drawn as centered SVG strokes (reveal on cluster hover) */
+.traffic:hover .light.close {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cline x1='3.5' y1='3.5' x2='8.5' y2='8.5' stroke='%2300000099' stroke-width='1.4' stroke-linecap='round'/%3E%3Cline x1='8.5' y1='3.5' x2='3.5' y2='8.5' stroke='%2300000099' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.traffic:hover .light.min {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cline x1='3' y1='6' x2='9' y2='6' stroke='%2300000099' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.traffic:hover .light.zoom {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cline x1='6' y1='3' x2='6' y2='9' stroke='%2300000099' stroke-width='1.4' stroke-linecap='round'/%3E%3Cline x1='3' y1='6' x2='9' y2='6' stroke='%2300000099' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.titlebar .spacer {
+  flex: 0 0 auto;
+  width: 52px;
+}
+
+/* ---- Body + resize ---- */
+.window-body {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+/* Resize grips: 4 edges + 4 corners (kept inside the window so the
+   rounded-corner overflow clip doesn't hide them). */
+.rz {
+  position: absolute;
+  z-index: 6;
+  touch-action: none;
+}
+.rz-n { top: 0; left: 12px; right: 12px; height: 6px; cursor: ns-resize; }
+.rz-s { bottom: 0; left: 12px; right: 12px; height: 6px; cursor: ns-resize; }
+.rz-e { right: 0; top: 12px; bottom: 12px; width: 6px; cursor: ew-resize; }
+.rz-w { left: 0; top: 12px; bottom: 12px; width: 6px; cursor: ew-resize; }
+.rz-ne { top: 0; right: 0; width: 12px; height: 12px; cursor: nesw-resize; }
+.rz-nw { top: 0; left: 0; width: 12px; height: 12px; cursor: nwse-resize; }
+.rz-se { bottom: 0; right: 0; width: 12px; height: 12px; cursor: nwse-resize; }
+.rz-sw { bottom: 0; left: 0; width: 12px; height: 12px; cursor: nesw-resize; }
+
+/* ============ GitHub profile card app ============ */
+.gh-card {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.gh-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.gh-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  border: 1px solid var(--border-hi);
+  flex: 0 0 auto;
+}
+
+.gh-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.gh-login {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-top: 2px;
+}
+
+.gh-bio {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.gh-blog {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.gh-stats {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gh-stat {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.gh-stat + .gh-stat {
+  border-left: 1px solid var(--border);
+}
+
+.gh-stat .num {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.gh-stat .lbl {
+  margin-top: 3px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.gh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background-color: transparent;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.gh-btn:hover {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+
+.gh-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============ Web Browser app ============ */
+.hidden {
+  display: none !important;
+}
+
+.browser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.browser-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.browser-url {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.browser-url:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.browser-btn {
+  flex: 0 0 auto;
+  height: 30px;
+  min-width: 30px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.browser-btn:hover {
+  border-color: var(--accent);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.browser-btn svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.browser-stage {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.browser-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: #ffffff;
+}
+
+/* Start page */
+.browser-home-page {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  padding: 28px;
+}
+
+.browser-home-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.browser-home-sub {
+  margin-top: 4px;
+  margin-bottom: 22px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.browser-bookmarks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.bookmark {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.bookmark:hover {
+  border-color: var(--accent);
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.bookmark-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.bookmark-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.bookmark-host {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+}
+
+/* Blocked-site fallback */
+.browser-blocked {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 30px;
+  text-align: center;
+}
+
+.browser-blocked-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.browser-blocked-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  word-break: break-all;
+}
+
+.browser-blocked-open {
+  margin-top: 4px;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.browser-blocked-open:hover {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ============ Calculator app ============ */
+.calc {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--surface);
+}
+
+.calc-display {
+  flex: 0 0 auto;
+  padding: 18px 16px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.calc-history {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  min-height: 16px;
+}
+
+.calc-current {
+  font-family: var(--mono);
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+.calc-keys {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  padding: 1px;
+  background-color: var(--border);
+}
+
+.calc-key {
+  border: 0;
+  font-family: var(--mono);
+  font-size: 19px;
+  color: var(--text);
+  background-color: var(--surface-2);
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.calc-key:hover { background-color: var(--border-hi); }
+.calc-key:active { background-color: var(--accent-dim); }
+.calc-key--wide { grid-column: span 2; }
+.calc-key--op { color: var(--accent); font-weight: 600; }
+.calc-key--fn { color: var(--text-dim) }
+.calc-key--eq { background-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.calc-key--eq:hover { background-color: var(--accent-dim); }
+.calc-key--eq:active { background-color: var(--accent-dim); }

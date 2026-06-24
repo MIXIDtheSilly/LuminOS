@@ -1,0 +1,70 @@
+/* LuminOS — design tokens. Purple, tech-like. SOLID COLORS ONLY, no gradients. */
+:root {
+  /* surfaces */
+  --bg: #0d0a14;
+  --grid: #1c1430;
+  --surface: #181225;
+  --surface-2: #211833;
+
+  /* lines / borders */
+  --border: #2e2247;
+  --border-hi: #4a3a6e;
+
+  /* accent */
+  --accent: #9b6bff;
+  --accent-dim: #6f4fd1;
+  --accent-ink: #16101f; /* readable text on an accent fill */
+
+  /* text */
+  --text: #ece8f5;
+  --text-dim: #9b90b8;
+
+  /* traffic lights (classic macOS) */
+  --tl-close: #ff5f57;
+  --tl-min: #febc2e;
+  --tl-zoom: #28c840;
+
+  /* type */
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+
+  /* shape */
+  --r: 12px;
+  --r-dock: 18px;
+
+  /* depth (shadow is not a gradient) */
+  --shadow: 0 10px 38px rgba(0, 0, 0, 0.55);
+  --shadow-focus: 0 18px 60px rgba(0, 0, 0, 0.70);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: var(--sans);
+  color: var(--text);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
