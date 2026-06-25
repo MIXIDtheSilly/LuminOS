@@ -8,7 +8,7 @@ A web-based desktop OS that runs entirely in your browser. No installs, no backe
 
 The goal isn't to make something that just *looks* like an OS for a screenshot. The goal is for it to actually be useful.
 
-** -> [Try it here](https://lumin-os-theta.vercel.app) and star it while you like it :p**
+**-> [Try it here](https://lumin-os-theta.vercel.app) and star it while you like it :p**
 
 ![The Lumin OS desktop with a dock and windows](images/github/desktop.png)
 
