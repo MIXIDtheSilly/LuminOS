@@ -7,8 +7,10 @@ import { githubApp } from "./apps/github.js";
 import { browserApp } from "./apps/browser.js";
 import { calculatorApp } from "./apps/calculator.js";
 import { editorApp } from "./apps/editor.js";
+import { filesApp } from "./apps/files.js";
+import { terminalApp } from "./apps/terminal.js";
 
-const apps = [githubApp, browserApp, calculatorApp, editorApp];
+const apps = [githubApp, filesApp, terminalApp, browserApp, calculatorApp, editorApp];
 
 function boot() {
   wm.init(document.getElementById("windows"));

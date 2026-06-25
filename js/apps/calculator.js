@@ -161,7 +161,7 @@ export const calculatorApp = {
   id: "calculator",
   name: "Calculator",
   icon: calcIcon,
-  iconBg: "#211833", // surface-2 tile; matches the purple chrome
+  iconBg: "#24d180", // surface-2 tile; matches the purple chrome
   launch() {
     return wm.createWindow({
       id: "calculator",

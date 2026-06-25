@@ -645,3 +645,196 @@
   border-radius: 12px !important;
   overflow: hidden;
 }
+
+/* ============ Files app ============ */
+.files {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background-color: rgba(24, 18, 37, 0.55);
+}
+
+.files-toolbar,
+.files-statusbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: rgba(33, 24, 51, 0.55);
+}
+
+.files-toolbar { border-bottom: 1px solid var(--border); }
+.files-statusbar { border-top: 1px solid var(--border); }
+
+.files-spacer { flex: 1 1 auto; }
+
+.files-btn {
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+}
+
+.files-btn:hover:not(:disabled) { background: var(--border); border-color: var(--border-hi); }
+.files-btn:disabled { opacity: 0.4; cursor: default; }
+.files-danger:hover:not(:disabled) { color: var(--tl-close); border-color: var(--tl-close); }
+
+.files-up {
+  width: 30px;
+  padding: 5px 0;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.files-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+  flex-wrap: nowrap;
+}
+
+.files-crumb {
+  padding: 3px 7px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color .12s ease, color .12s ease;
+}
+
+.files-crumb:hover { background: var(--border); color: var(--text); }
+.files-crumb.current { color: var(--text); font-weight: 600; }
+.files-sep { color: var(--text-dim); font-size: 12px; }
+
+.files-grid {
+  list-style: none;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  align-content: start;
+  gap: 6px;
+  padding: 14px;
+}
+
+.files-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px 10px;
+  border-radius: 11px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color .12s ease, border-color .12s ease;
+}
+
+.files-item:hover { background: var(--border); }
+.files-item.selected { background: rgba(155, 107, 255, .18); border-color: var(--accent-dim); }
+
+.files-ico svg { width: 44px; height: 44px; display: block; }
+.files-ico--dir { color: var(--accent); }
+.files-ico--file { color: var(--text-dim); }
+
+.files-name {
+  font-size: 12px;
+  color: var(--text);
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.25;
+  max-width: 100%;
+}
+
+.files-count {
+  font-size: 12px;
+  color: var(--text-dim);
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.files-actions { display: flex; gap: 6px; }
+
+.files-prompt {
+  padding: 8px 12px;
+  background-color: rgba(33, 24, 51, 0.55);
+  border-top: 1px solid var(--border);
+}
+
+.files-prompt.hidden { display: none; }
+
+.files-input {
+  width: 100%;
+  padding: 7px 11px;
+  font-family: var(--code-mono);
+  font-size: 12.5px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--accent-dim);
+  border-radius: 9px;
+  outline: none;
+}
+
+.files-input::placeholder { color: var(--text-dim); }
+
+/* ============ Terminal app ============ */
+.term {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(13, 10, 20, 0.78);
+  font-family: var(--code-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  padding: 12px 14px;
+  overflow: hidden;
+  cursor: text;
+}
+
+.term-output {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.term-line { min-height: 1em; }
+.term-dir { color: var(--accent); }
+.term-err { color: var(--tl-close); }
+.term-dim { color: var(--text-dim); }
+
+.term-inputline {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.term-prompt {
+  color: var(--accent);
+  white-space: pre;
+  flex: 0 0 auto;
+}
+
+.term-input {
+  flex: 1 1 auto;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: inherit;
+  caret-color: var(--accent);
+  padding: 0;
+}

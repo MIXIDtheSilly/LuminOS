@@ -1,4 +1,5 @@
 import { wm } from "../wm.js";
+import { fs } from "../fs.js";
 
 const editorIcon = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>`;
 
@@ -6,18 +7,15 @@ const MONACO_VERSION = "0.52.2";
 const MONACO_BASE = `https://cdn.jsdelivr.net/npm/monaco-editor@${MONACO_VERSION}/min/vs`;
 const EMMET_URL = "https://cdn.jsdelivr.net/npm/emmet-monaco-es@5.5.0/dist/emmet-monaco.min.js";
 
-const FILES ={
-  "welcome.md": {
-    language: "markdown",
-    value: `# LuminOS Editor
-
-Its a little editor made using Monaco
-Suggesions and Emmet should world too!
-`,
-  },
-};
-
 let monacoPromise = null;
+
+// Resolves once an editor window is up and ready to open files. Other apps
+// (Files, Terminal) await this to drive "open in editor". Reset on each launch.
+let editorReady = null;
+let resolveReady = null;
+function freshReady() {
+  editorReady = new Promise((r) => (resolveReady = r));
+}
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
@@ -127,7 +125,7 @@ function setupMonaco(monaco) {
     window.emmetMonaco.emmetJSX(monaco, ["javascript", "typescript"]);
   }
 
-  // VS Code-style JS/TS snippets (Monaco doesn't ship these).
+  // VS Code-style JS/TS snippets (Monaco doesn't have these).
   const JS_SNIPPETS = [
     ["clg", "console.log", "console.log($1);$0"],
     ["cle", "console.error", "console.error($1);$0"],
@@ -209,7 +207,7 @@ function buildEditor() {
     .then((monaco) => {
       loadingEl.remove();
 
-      // Detect language from the file name using Monaco's own registry
+      // Detect language from the file name using Monaco's
       const extMap = new Map();
       const nameMap = new Map();
       const labelMap = new Map();
@@ -313,33 +311,55 @@ function buildEditor() {
       });
 
       // --- Models, file list and open-file tabs
-      const models = new Map();
-      const openTabs = [];
+      const models = new Map(); // path -> monaco model
+      const openTabs = []; // paths
       let active = null;
       const emptyModel = monaco.editor.createModel("", "plaintext");
+      const label = (path) => path.replace(/^\//, "");
 
-      function modelFor(name) {
-        if (!models.has(name)) {
-          const f = FILES[name];
-          models.set(name, monaco.editor.createModel(f.value, f.language || langForName(name)));
+      function modelFor(path) {
+        let model = models.get(path);
+        if (!model) {
+          const value = fs.exists(path) ? fs.read(path) : "";
+          model = monaco.editor.createModel(value, langForName(fs.basename(path)));
+          // Persist edits back to the filesystem (debounced).
+          let timer = null;
+          model.onDidChangeContent(() => {
+            clearTimeout(timer);
+            timer = setTimeout(() => saveModel(path), 350);
+          });
+          models.set(path, model);
         }
-        return models.get(name);
+        return model;
+      }
+
+      let savingFromEditor = false;
+      function saveModel(path) {
+        const model = models.get(path);
+        if (!model) return;
+        savingFromEditor = true; // don't let our own write bounce back as a refresh
+        try {
+          fs.write(path, model.getValue());
+        } finally {
+          savingFromEditor = false;
+        }
       }
 
       function renderTabs() {
         tabsEl.innerHTML = "";
-        openTabs.forEach((name) => {
+        openTabs.forEach((path) => {
           const tab = document.createElement("div");
-          tab.className = "editor-tabitem" + (name === active ? " active" : "");
+          tab.className = "editor-tabitem" + (path === active ? " active" : "");
           tab.innerHTML = `<span class="dot"></span><span class="nm"></span><button class="editor-tabclose" type="button" title="Close">×</button>`;
-          tab.querySelector(".nm").textContent = name;
+          tab.querySelector(".nm").textContent = fs.basename(path);
+          tab.title = label(path);
           tab.addEventListener("mousedown", (e) => {
             if (e.target.closest(".editor-tabclose")) return;
-            open(name);
+            open(path);
           });
           tab.querySelector(".editor-tabclose").addEventListener("click", (e) => {
             e.stopPropagation();
-            closeTab(name);
+            closeTab(path);
           });
           tabsEl.appendChild(tab);
         });
@@ -347,13 +367,15 @@ function buildEditor() {
 
       function syncFileList() {
         [...filesEl.children].forEach((li) =>
-          li.classList.toggle("active", li.dataset.name === active));
+          li.classList.toggle("active", li.dataset.path === active));
       }
 
-      function open(name) {
-        if (!openTabs.includes(name)) openTabs.push(name);
-        active = name;
-        const model = modelFor(name);
+      function open(path) {
+        path = fs.normalize(path);
+        if (!fs.exists(path)) return;
+        if (!openTabs.includes(path)) openTabs.push(path);
+        active = path;
+        const model = modelFor(path);
         editor.setModel(model);
         editor.updateOptions({ readOnly: false });
         langEl.textContent = labelForLang(model.getLanguageId());
@@ -362,11 +384,12 @@ function buildEditor() {
         editor.focus();
       }
 
-      function closeTab(name) {
-        const i = openTabs.indexOf(name);
+      function closeTab(path) {
+        const i = openTabs.indexOf(path);
         if (i === -1) return;
+        saveModel(path);
         openTabs.splice(i, 1);
-        if (active !== name) return renderTabs();
+        if (active !== path) return renderTabs();
         const next = openTabs[i] || openTabs[i - 1] || null;
         if (next) {
           open(next);
@@ -380,20 +403,52 @@ function buildEditor() {
         }
       }
 
-      function addFileEntry(name) {
+      function addFileEntry(path) {
         const li = document.createElement("li");
         li.className = "editor-file";
-        li.dataset.name = name;
+        li.dataset.path = path;
+        li.title = label(path);
         li.innerHTML = `<span class="dot"></span><span></span>`;
-        li.lastElementChild.textContent = name;
-        li.addEventListener("click", () => open(name));
+        li.lastElementChild.textContent = label(path);
+        li.addEventListener("click", () => open(path));
         filesEl.appendChild(li);
       }
 
-      Object.keys(FILES).forEach(addFileEntry);
-      open(Object.keys(FILES)[0]);
+      // rebuild the sidebar from the filesystem, keeping selection in sync.
+      function rebuildFileList() {
+        filesEl.innerHTML = "";
+        fs.allFiles().forEach(addFileEntry);
+        syncFileList();
+      }
 
-      // --- New file creation ---
+      rebuildFileList();
+      const first = fs.allFiles()[0];
+      if (first) open(first);
+
+      // Reflect filesystem changes made by other apps
+      const unsubscribe = fs.onChange(() => {
+        if (!el.isConnected) return unsubscribe(); // window closed — stop listening
+        if (savingFromEditor) return;
+        const present = new Set(fs.allFiles());
+        // Drop tabs/models for files that disappeared.
+        for (const path of [...openTabs]) {
+          if (!present.has(path)) {
+            const m = models.get(path);
+            if (m) { m.dispose(); models.delete(path); }
+            closeTab(path);
+          }
+        }
+        for (const [path, model] of models) {
+          if (present.has(path) && model !== editor.getModel()) {
+            const onDisk = fs.read(path);
+            if (model.getValue() !== onDisk) model.setValue(onDisk);
+          }
+        }
+        rebuildFileList();
+      });
+      editor.onDidDispose?.(() => unsubscribe());
+
+      // --- New file creation
       const showNew = () => { newInput.classList.remove("hidden"); newInput.value = ""; newInput.focus(); };
       const hideNew = () => newInput.classList.add("hidden");
       newBtn.addEventListener("click", showNew);
@@ -403,14 +458,20 @@ function buildEditor() {
         let name = newInput.value.trim();
         if (!name) return hideNew();
         if (!/\./.test(name)) name += ".txt";
-        if (!FILES[name]) {
-          FILES[name] = { language: langForName(name), value: "" };
-          addFileEntry(name);
-        }
+        const path = name.startsWith("/") ? fs.normalize(name) : "/" + name;
+        if (!fs.exists(path)) fs.write(path, "");
         hideNew();
-        open(name);
+        open(path);
       });
       newInput.addEventListener("blur", hideNew);
+
+      // Ctrl+S flushes the active file to disk immediately.
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+        if (active) saveModel(active);
+      });
+
+      // Signal that this editor instance can now open files on request.
+      resolveReady?.({ open });
     })
     .catch(() => {
       loadingEl.textContent = "Couldn’t load the editor (offline?).";
@@ -423,8 +484,15 @@ export const editorApp = {
   id: "editor",
   name: "Code Editor",
   icon: editorIcon,
-  iconBg: "#0078d7", // surface-2 tile; matches the purple chrome
+  iconBg: "#812fce",
   launch() {
+    if (wm.isOpen("editor")) {
+      const win = wm.get("editor");
+      win.restore();
+      win.focus();
+      return win;
+    }
+    freshReady();
     return wm.createWindow({
       id: "editor",
       title: "Code Editor",
@@ -433,5 +501,10 @@ export const editorApp = {
       height: 600,
       center: true,
     });
+  },
+  // Open path in the editor, launching the app first if needed
+  openPath(path) {
+    this.launch();
+    editorReady.then((api) => api.open(path)).catch(() => {});
   },
 };

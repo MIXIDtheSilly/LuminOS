@@ -131,7 +131,7 @@ export const browserApp = {
   id: "browser",
   name: "Web Browser",
   icon: browserIcon,
-  iconBg: "#1a73e8",
+  iconBg: "#3663c4",
   launch() {
     return wm.createWindow({
       id: "browser",
