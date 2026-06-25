@@ -24,7 +24,7 @@ Lumin OS is styled after macOS (menu bar up top with a live clock, a dock at the
 
 | App | What it does |
 | --- | --- |
-| **Files** | A real file explorer — browse folders, breadcrumbs, new/rename/delete, import files from your computer or save them back out. |
+| **Files** | A real file explorer: browse folders, breadcrumbs, new/rename/delete, import files from your computer or save them back out. |
 | **Terminal** | An actual working shell. `ls`, `cd`, `cat`, `mkdir`, `rm`, `mv`, `cp`, `tree`, `echo > file`, command history, and more. Type `help`. |
 | **Code Editor** | A VS Code-style editor built on **Monaco**, IntelliSense, Emmet, auto-closing tags, ~90 languages by file extension, tabs, and auto-save. |
 | **Browser** | Browse the web in an iframe, with a graceful fallback (and "open in new tab" button) for sites that block embedding. |
