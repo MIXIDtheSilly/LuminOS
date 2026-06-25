@@ -8,7 +8,7 @@ A web-based desktop OS that runs entirely in your browser. No installs, no backe
 
 The goal isn't to make something that just *looks* like an OS for a screenshot. The goal is for it to actually be useful.
 
-**👉 [Try it here](https://lumin-os-theta.vercel.app) — and star it while you like it :p**
+**👉 [Try it here](https://lumin-os-theta.vercel.app) and star it while you like it :p**
 
 ![The Lumin OS desktop with a dock and windows](images/github/desktop.png)
 
@@ -26,7 +26,7 @@ Lumin OS is styled after macOS (menu bar up top with a live clock, a dock at the
 | --- | --- |
 | **Files** | A real file explorer — browse folders, breadcrumbs, new/rename/delete, import files from your computer or save them back out. |
 | **Terminal** | An actual working shell. `ls`, `cd`, `cat`, `mkdir`, `rm`, `mv`, `cp`, `tree`, `echo > file`, command history, and more. Type `help`. |
-| **Code Editor** | A VS Code-style editor built on **Monaco** — IntelliSense, Emmet, auto-closing tags, ~90 languages by file extension, tabs, and auto-save. |
+| **Code Editor** | A VS Code-style editor built on **Monaco**, IntelliSense, Emmet, auto-closing tags, ~90 languages by file extension, tabs, and auto-save. |
 | **Browser** | Browse the web in an iframe, with a graceful fallback (and "open in new tab" button) for sites that block embedding. |
 | **Calculator** | A calculator. What else do you expect? |
 | **GitHub** | A profile card for the project's creator (it's me). |
